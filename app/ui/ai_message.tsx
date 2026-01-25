@@ -6,6 +6,7 @@ import Markdown from 'react-markdown';
 export type AiMessageContext = {
     link: string;
     text: string;
+    image?: string;
 }
 
 type AiMessageProps = {
@@ -16,10 +17,23 @@ type AiMessageProps = {
 function ContextEntry({
     text,
     link,
+    image
 }: AiMessageContext) {
     return (
-        <div className="border-1 border-black p-2">
-            <a target="_blank" rel="noopener noreferrer" href={link}><p>{text.split("\n\n")[0]}</p></a>
+        <div className="border-1 border-black p-2 flex flex-row justify-center items-center">
+            {
+                image &&
+                <div className='max-w-[220px] max-h-[80px] overflow-hidden'>
+                    <img
+                        className='object-contain h-full w-full'
+                        src={image}
+                        width={220}
+                        height={80}
+                        alt="Image"
+                    />
+                </div>
+            }
+            <a target="_blank" rel="noopener noreferrer" href={link}><p className='p-2'>{text.split("\n\n")[0]}</p></a>
         </div>
     )
 }
@@ -38,8 +52,8 @@ export default function AiMessage({ message, context }: AiMessageProps) {
             {
                 context.length ?
                     <div className="underline text-gray-500 cursor-pointer">
-                        <span onMouseEnter={(ev) => {
-                            
+                        <span onClick={(ev) => {
+
                             setPos({
                                 x: ev.clientX,
                                 y: ev.clientY
@@ -53,19 +67,21 @@ export default function AiMessage({ message, context }: AiMessageProps) {
             }
             {
                 panel &&
-                <div 
-                style={{
-                    top: pos.y,
-                    left: pos.x
-                }}
-                onMouseLeave={() => {
-                    setPanel(false)
-                }} className={`absolute w-[600px] h-[250px] bg-white grid grid-cols-2 overflow-scroll p-2`}>
+                <div
+                    style={{
+                        top: pos.y,
+                        left: pos.x
+                    }}
+                    onMouseLeave={() => {
+                        setPanel(false)
+                    }} 
+                    className={`absolute w-[800px] h-[250px] bg-white grid grid-cols-2 overflow-scroll p-2`}>
                     {
-                        context.map(({ text, link }) => {
+                        context.map(({ text, link, image }) => {
                             return <ContextEntry
                                 text={text}
                                 link={link}
+                                image={image}
                             />
                         })
                     }
