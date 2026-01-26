@@ -20,21 +20,23 @@ function ContextEntry({
     image
 }: AiMessageContext) {
     return (
-        <div className="border-1 border-black p-2 flex flex-row justify-center items-center">
-            {
-                image &&
-                <div className='max-w-[220px] max-h-[80px] overflow-hidden'>
-                    <img
-                        className='object-contain h-full w-full'
-                        src={image}
-                        width={220}
-                        height={80}
-                        alt="Image"
-                    />
-                </div>
-            }
-            <a target="_blank" rel="noopener noreferrer" href={link}><p className='p-2'>{text.split("\n\n")[0]}</p></a>
-        </div>
+        <a target="_blank" rel="noopener noreferrer" href={link}>
+            <div className="h-full w-full border-1 border-black p-2 flex flex-row justify-center items-center">
+                {
+                    image &&
+                    <div className='max-w-[220px] max-h-[80px] overflow-hidden'>
+                        <img
+                            className='object-contain h-full w-full'
+                            src={image}
+                            width={220}
+                            height={80}
+                            alt="Image"
+                        />
+                    </div>
+                }
+                <p className='p-2'>{text.split("\n\n")[0]}</p>
+            </div>
+        </a>
     )
 }
 
@@ -74,7 +76,7 @@ export default function AiMessage({ message, context }: AiMessageProps) {
                     }}
                     onMouseLeave={() => {
                         setPanel(false)
-                    }} 
+                    }}
                     className={`absolute w-[800px] h-[250px] bg-white grid grid-cols-2 overflow-scroll p-2`}>
                     {
                         context.map(({ text, link, image }) => {

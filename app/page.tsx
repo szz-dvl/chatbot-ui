@@ -24,7 +24,6 @@ export default function Home() {
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [done, setDone] = useState<boolean>(true);
   const [thoughts, setThoughts] = useState<string[]>([]);
-  const [thinking, setThinking] = useState<boolean>(false);
   const [uuid,] = useState<string>(uuidv4())
 
   const bottom = useRef<null | HTMLDivElement>(null)
@@ -55,11 +54,6 @@ export default function Home() {
   }, [done]);
 
   useEffect(() => {
-    if (thinking)
-      setDone(false);
-  }, [thinking]);
-
-  useEffect(() => {
     bottom.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages, thoughts]);
 
@@ -75,7 +69,6 @@ export default function Home() {
     let { value, done } = await reader.read();
 
     if (value) {
-      setThinking(false)
       content = decodeChunk(value)
     }
 
@@ -103,7 +96,7 @@ export default function Home() {
   const formSubmit = async (ev: FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
 
-    setThinking(true);
+    setDone(false);
 
     // Read the form data
     const form = ev.target as HTMLFormElement;
@@ -175,8 +168,8 @@ export default function Home() {
           <div ref={bottom} />
         </div>
       </div>
-      <form method="post" onSubmit={formSubmit} className="flex justify-center items-center space-x-5">
-        <fieldset disabled={!done}>
+      <form method="post" onSubmit={formSubmit} className="flex justify-between items-center">
+        <fieldset disabled={!done} className="space-x-5">
           <input type="text" name="question" className="w-200 border-black border-1 bg-white" />
           <button type="submit" className="border-black border-1 p-[2px] cursor-pointer bg-white">Send</button>
         </fieldset>
