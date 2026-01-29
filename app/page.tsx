@@ -6,6 +6,7 @@ import AiMessage, { AiMessageContext } from "./ui/ai_message";
 import { v4 as uuidv4 } from 'uuid';
 import Image from 'next/image'
 import Thoughts from "./ui/thoughts";
+import dynamic from "next/dynamic";
 
 type AiMessageType = {
   type: "ai"
@@ -20,10 +21,13 @@ type UserMessageType = {
 
 type Message = AiMessageType | UserMessageType;
 
+const Session = dynamic(() => import('./ui/session'), { ssr: false });
+
 export default function Home() {
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [done, setDone] = useState<boolean>(true);
   const [thoughts, setThoughts] = useState<string[]>([]);
+  const [erroredResponse, setErroredResponse] = useState<AiMessageType>();
   const [uuid,] = useState<string>(uuidv4())
 
   const bottom = useRef<null | HTMLDivElement>(null)
@@ -56,6 +60,11 @@ export default function Home() {
   useEffect(() => {
     bottom.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages, thoughts]);
+
+  useEffect(() => {
+    if (erroredResponse)
+      setMessages([...messages, erroredResponse])
+  }, [erroredResponse])
 
   const decodeChunk = (chunk: Uint8Array<ArrayBufferLike>) => {
     return Buffer.from(chunk).toString("utf-8");
@@ -119,15 +128,14 @@ export default function Home() {
     });
 
     if (!response.ok) {
-      setMessages([
-        ...messages,
+      setErroredResponse(
         {
           type: "ai",
           content: "Lo siento, se ha producido un error, ¿puedes repetir tu pregunta por favor?",
           context: []
         },
+      );
 
-      ]);
       setDone(true);
     } else if (response.body) {
       await parseResponse(response.body);
@@ -145,7 +153,7 @@ export default function Home() {
         />
         <span className="text-4xl text-white p-[20px] m-[20px]"> Bot </span>
       </h1>
-      <div className="min-h-[650px] max-h-[650px] min-w-2/3 max-w-2/3 border-red-100 border-1 mb-[50px] overflow-scroll p-[15px] bg-white">
+      <div className="min-h-[850px] max-h-[850px] min-w-2/3 max-w-2/3 border-red-100 border-1 mb-[50px] overflow-scroll p-[15px] bg-white pb-[50px]">
         <div className="flex flex-col w-full h-full">
           {
             messages.reverse().map(message => {
@@ -174,9 +182,7 @@ export default function Home() {
           <button type="submit" className="border-black border-1 p-[2px] cursor-pointer bg-white">Send</button>
         </fieldset>
       </form>
-      <div>
-        {uuid}
-      </div>
+      <Session uuid={uuid} />
     </div>
   );
 }

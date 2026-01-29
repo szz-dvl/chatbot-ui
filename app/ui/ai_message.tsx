@@ -2,10 +2,12 @@
 
 import { useState } from 'react';
 import Markdown from 'react-markdown';
+import { DateTime } from "luxon";
 
 export type AiMessageContext = {
     link: string;
     text: string;
+    published: string;
     image?: string;
 }
 
@@ -17,24 +19,31 @@ type AiMessageProps = {
 function ContextEntry({
     text,
     link,
-    image
+    image,
+    published
 }: AiMessageContext) {
+
+    const [epoch] = useState<number>(parseInt(published))
+
     return (
         <a target="_blank" rel="noopener noreferrer" href={link}>
-            <div className="h-full w-full border-1 border-black p-2 flex flex-row justify-center items-center">
-                {
-                    image &&
-                    <div className='max-w-[220px] max-h-[80px] overflow-hidden'>
-                        <img
-                            className='object-contain h-full w-full'
-                            src={image}
-                            width={220}
-                            height={80}
-                            alt="Image"
-                        />
-                    </div>
-                }
-                <p className='p-2'>{text.split("\n\n")[0]}</p>
+            <div className='h-full w-full border-1 border-black flex flex-col items-end justify-end'>
+                <div className="p-2 flex flex-row justify-center items-center">
+                    {
+                        image &&
+                        <div className='w-1/3 overflow-hidden'>
+                            <img
+                                className='object-cover h-full w-full'
+                                src={image}
+                                width={220}
+                                height={80}
+                                alt="Image"
+                            />
+                        </div>
+                    }
+                    <p className='p-2 w-2/3'>{text.split("\n\n")[0]}</p>
+                </div>
+                <span className='p-2'> Enviada: {DateTime.fromJSDate(new Date(epoch)).toFormat("dd/MM/yyyy HH:mm")}</span>
             </div>
         </a>
     )
@@ -63,7 +72,7 @@ export default function AiMessage({ message, context }: AiMessageProps) {
 
                             setPanel(!panel)
                         }
-                        }>Context</span>
+                        }>Contexto</span>
                     </div>
                     : null
             }
@@ -79,11 +88,12 @@ export default function AiMessage({ message, context }: AiMessageProps) {
                     }}
                     className={`absolute w-[800px] h-[250px] bg-white grid grid-cols-2 overflow-scroll p-2`}>
                     {
-                        context.map(({ text, link, image }) => {
+                        context.map(({ text, link, image, published }) => {
                             return <ContextEntry
                                 text={text}
                                 link={link}
                                 image={image}
+                                published={published}
                             />
                         })
                     }
