@@ -52,9 +52,10 @@ function ContextEntry({
 export default function AiMessage({ message, context }: AiMessageProps) {
     const [panel, setPanel] = useState<boolean>(false);
     const [pos, setPos] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
+    const [isMobile] = useState<boolean>(window.screen.width <= 640)
 
     return (
-        <div className="self-end max-w-2/3 mb-[15px]">
+        <div className="self-end md:max-w-2/3 mb-[15px]">
             <div className="border-1 border-black p-2 rounded-lg bg-cyan-100 size-full">
                 <Markdown>
                     {message}
@@ -86,7 +87,7 @@ export default function AiMessage({ message, context }: AiMessageProps) {
                     onMouseLeave={() => {
                         setPanel(false)
                     }}
-                    className={`absolute w-[800px] h-[250px] bg-white grid grid-cols-2 overflow-scroll p-2`}>
+                    className="absolute h-[250px] md:w-[800px] md:h-[250px] bg-white grid md:grid-cols-2 grid-cols-1 overflow-scroll p-2">
                     {
                         context.map(({ text, link, image, published }) => {
                             return <ContextEntry

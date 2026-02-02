@@ -143,18 +143,23 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen items-center justify-center font-sans bg-orange-500">
-      <h1 className="mb-[50px]">
-        <Image
-          src="https://www.meneame.net/img/mnm/logo-white.svg"
-          width={500}
-          height={500}
-          alt="Meneame"
-        />
-        <span className="text-4xl text-white p-[20px] m-[20px]"> Bot </span>
-      </h1>
-      <div className="min-h-[850px] max-h-[850px] min-w-2/3 max-w-2/3 border-red-100 border-1 mb-[50px] overflow-scroll p-[15px] bg-white pb-[50px]">
-        <div className="flex flex-col w-full h-full">
+    <div className="flex min-h-screen items-center justify-center font-sans bg-orange-500 flex-wrap">
+      <div className="w-full flex justify-center items-center m-[20px]">
+        <h1>
+          <Image
+            src="https://www.meneame.net/img/mnm/logo-white.svg"
+            width={500}
+            height={500}
+            alt="Meneame"
+          />
+          <span className="text-4xl text-white p-[5px] md:p-[20px]"> Bot </span>
+        </h1>
+      </div>
+      <div className="min-h-[500px] max-h-[500px] min-w-full max-w-full
+                      md:min-h-[850px] md:max-h-[850px] md:min-w-2/3 md:max-w-2/3
+                      border-red-100 border-1 mb-[35px] overflow-scroll p-[15px] bg-white pb-[50px]">
+
+        <div className="flex w-full h-full flex-col flex-wrap">
           {
             messages.reverse().map(message => {
               switch (message.type) {
@@ -176,9 +181,10 @@ export default function Home() {
           <div ref={bottom} />
         </div>
       </div>
-      <form method="post" onSubmit={formSubmit} className="flex justify-between items-center">
-        <fieldset disabled={!done} className="space-x-5">
-          <input type="text" name="question" className="w-200 border-black border-1 bg-white" />
+      <form method="post" onSubmit={formSubmit} className="flex items-center justify-center w-full">
+        <fieldset disabled={!done} className="min-h-30 flex items-center justify-center flex-wrap m-2 md:max-w-2/3">
+          <textarea name="question" rows={2} cols={20} className="w-full bg-white md:min-w-200 border-black border-1" />
+          {/* <input type="text" name="question" className="w-full md:min-w-200 border-black border-1 bg-white" /> */}
           <button type="submit" className="border-black border-1 p-[2px] cursor-pointer bg-white">Send</button>
         </fieldset>
       </form>

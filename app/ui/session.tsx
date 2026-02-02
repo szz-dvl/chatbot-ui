@@ -6,8 +6,10 @@ type SessionProps = {
 
 export default function Session({ uuid }: SessionProps) {
     return (
-        <div>
-            { uuid }
+        <div className="flex w-full justify-end">
+            <div>
+                {uuid}
+            </div>
         </div>
     );
 }
