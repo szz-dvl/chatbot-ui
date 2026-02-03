@@ -1,8 +1,10 @@
 'use client'
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Markdown from 'react-markdown';
 import { DateTime } from "luxon";
+import { AudioContextType } from './audio-config';
+import Image from 'next/image'
 
 export type AiMessageContext = {
     link: string;
@@ -13,7 +15,8 @@ export type AiMessageContext = {
 
 type AiMessageProps = {
     message: string,
-    context: AiMessageContext[]
+    context: AiMessageContext[],
+    audio: AudioContextType
 }
 
 function ContextEntry({
@@ -48,8 +51,54 @@ function ContextEntry({
         </a>
     )
 }
+type PlayerProps = {
+    message: string,
+    audio: AudioContextType
+}
 
-export default function AiMessage({ message, context }: AiMessageProps) {
+function Player({ message, audio }: PlayerProps) {
+    const [playing, setPlaying] = useState<boolean>(false);
+    useEffect(() => {
+        return () => {
+            speechSynthesis.cancel()
+        }
+    }, [])
+
+    return (
+        <div className='cursor-pointer mt-1'>
+            <Image
+                src={playing ? "stop.svg" : "play.svg"}
+                width={20}
+                height={20}
+                alt="Audio"
+                onClick={() => {
+
+                    if (playing) {
+                        speechSynthesis.cancel()
+                    } else {
+                        
+                        const utterance = new SpeechSynthesisUtterance(message);
+                        utterance.voice = audio.voice;
+                        utterance.volume = audio.volume;
+                        utterance.pitch = audio.pitch;
+                        utterance.rate = audio.rate;
+
+                        utterance.addEventListener("end", () => {
+                            setPlaying(false)
+                        });
+
+                        speechSynthesis.speak(utterance);
+                    }
+
+                    setPlaying(!playing)
+                }}
+            />
+        </div>
+    )
+}
+
+export default function AiMessage({ message, context, audio }: AiMessageProps) {
+
     const [panel, setPanel] = useState<boolean>(false);
     const [pos, setPos] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
     const [isMobile] = useState<boolean>(window.screen.width <= 640)
@@ -61,22 +110,25 @@ export default function AiMessage({ message, context }: AiMessageProps) {
                     {message}
                 </Markdown>
             </div>
-            {
-                context.length ?
-                    <div className="underline text-gray-500 cursor-pointer">
-                        <span onClick={(ev) => {
+            <div className='flex justify-between'>
+                {
+                    context.length ?
+                        <div className="underline text-gray-500 cursor-pointer">
+                            <span onClick={(ev) => {
 
-                            setPos({
-                                x: ev.clientX,
-                                y: ev.clientY
-                            });
+                                setPos({
+                                    x: ev.clientX,
+                                    y: ev.clientY
+                                });
 
-                            setPanel(!panel)
-                        }
-                        }>Contexto</span>
-                    </div>
-                    : null
-            }
+                                setPanel(!panel)
+                            }
+                            }>Contexto</span>
+                        </div>
+                        : <span></span>
+                }
+                <Player message={message} audio={audio} />
+            </div>
             {
                 panel &&
                 <div
