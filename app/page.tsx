@@ -10,7 +10,7 @@ import dynamic from "next/dynamic";
 import AudioConfig, { AudioContextType } from "./ui/audio-config";
 
 export const AudioContext = createContext<AudioContextType>({
-  voice: speechSynthesis.getVoices()[0],
+  voice: undefined,
   volume: 1,
   pitch: 1,
   rate: 1
@@ -116,59 +116,60 @@ export default function Home() {
   const formSubmit = async (ev: FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
 
-    setDone(false);
-
-    // Read the form data
     const form = ev.target as HTMLFormElement;
     const formData = new FormData(form);
 
-    setMessages([
-      ...messages,
-      {
-        type: "user",
-        content: formData.get("question")!.toString()
-      }
-    ]);
+    const content = formData.get("question")!.toString()
 
-    const response = await fetch("http://localhost:3002/chatbot", {
-      method: form.method,
-      body: formData,
-      headers: {
-        "X-ChatBot-Session": uuid
-      }
-    });
+    if (content.trim()) {
 
-    if (!response.ok) {
-      setErroredResponse(
+      setDone(false);
+
+      setMessages([
+        ...messages,
         {
-          type: "ai",
-          content: "Lo siento, se ha producido un error, ¿puedes repetir tu pregunta por favor?",
-          context: []
-        },
-      );
+          type: "user",
+          content
+        }
+      ]);
 
-      setDone(true);
-    } else if (response.body) {
-      await parseResponse(response.body);
+      const response = await fetch("http://localhost:3002/chatbot", {
+        method: form.method,
+        body: formData,
+        headers: {
+          "X-ChatBot-Session": uuid
+        }
+      });
+
+      if (!response.ok) {
+        setErroredResponse(
+          {
+            type: "ai",
+            content: "Lo siento, se ha producido un error, ¿puedes repetir tu pregunta por favor?",
+            context: []
+          },
+        );
+
+        setDone(true);
+      } else if (response.body) {
+        await parseResponse(response.body);
+      }
     }
   }
 
   return (
     <AudioContext value={config}>
       <div className="flex min-h-screen items-center justify-center font-sans bg-orange-500 flex-wrap">
-        <div className="flex w-full">
-          <div className="w-full flex justify-center items-center m-[20px]">
-            <h1>
-              <Image
-                src="https://www.meneame.net/img/mnm/logo-white.svg"
-                width={500}
-                height={500}
-                alt="Meneame"
-              />
-              <span className="text-4xl text-white p-[5px] md:p-[20px]"> Bot </span>
-            </h1>
-          </div>
-          <AudioConfig config={config} setConfig={setConfig}/>
+        <div className="w-full flex justify-center items-center m-[20px]">
+          <h1>
+            <Image
+              src="https://www.meneame.net/img/mnm/logo-white.svg"
+              width={500}
+              height={500}
+              alt="Meneame"
+            />
+            <span className="text-4xl text-white p-[5px] md:p-[20px]"> Bot </span>
+          </h1>
         </div>
         <div className="min-h-[500px] max-h-[500px] min-w-full max-w-full
                       md:min-h-[850px] md:max-h-[850px] md:min-w-2/3 md:max-w-2/3
@@ -203,7 +204,10 @@ export default function Home() {
             <button type="submit" className="border-black border-1 p-[2px] cursor-pointer bg-white">Enviar</button>
           </fieldset>
         </form>
-        <Session uuid={uuid} />
+        <div className="flex justify-between items-end w-full">
+          <AudioConfig config={config} setConfig={setConfig} />
+          <Session uuid={uuid} />
+        </div>
       </div>
     </AudioContext>
   );

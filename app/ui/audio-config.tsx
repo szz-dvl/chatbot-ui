@@ -1,8 +1,10 @@
-import { createContext, FormEvent, SetStateAction, useContext, useState } from "react";
+import { SetStateAction, useState } from "react";
 import Image from 'next/image'
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
 
 export type AudioContextType = {
-    voice: SpeechSynthesisVoice,
+    voice?: SpeechSynthesisVoice,
     volume: number,
     pitch: number,
     rate: number
@@ -17,21 +19,22 @@ export default function AudioConfig({ setConfig, config }: AudioConfigProps) {
 
     const [voices] = useState<SpeechSynthesisVoice[]>(speechSynthesis.getVoices())
     const [panel, setPanel] = useState<boolean>(false)
+    const [isMobile] = useState<boolean>(window.screen.width <= 640)
 
     return (
-        <div className="relative m-20 cursor-pointer">
+        <div className="w-screen">
             <Image
+                className="ml-5 mb-5 cursor-pointer"
                 src="headphones.svg"
-                width={50}
-                height={50}
+                width={30}
+                height={30}
                 alt="Audio"
                 onClick={() => {
-                    setPanel(!panel)
+                    setPanel(true)
                 }}
             />
-            {
-                panel &&
-                <div style={{ top: -45, left: -420 }} className="absolute bg-white w-[400px] border-1 border-black p-2">
+            <Modal open={panel} onClose={() => setPanel(false)} className="flex justify-center items-center">
+                <div className="bg-white border-1 border-black min-w-[400px] p-2">
                     <div className="flex w-full justify-center mb-2">
                         <h2 className="m-auto"> <strong>Configuración de audio</strong> </h2>
                     </div>
@@ -47,7 +50,7 @@ export default function AudioConfig({ setConfig, config }: AudioConfigProps) {
                                 })
                             }}>
                                 {
-                                    voices.map(voice => <option value={voice.voiceURI}>{voice.name}</option>)
+                                    voices.map(voice => <option selected={voice.voiceURI === config.voice?.voiceURI} value={voice.voiceURI}>{voice.name}</option>)
                                 }
                             </select>
                         </div>
@@ -83,7 +86,7 @@ export default function AudioConfig({ setConfig, config }: AudioConfigProps) {
                         </div>
                     </form>
                 </div>
-            }
+            </Modal>
         </div>
     );
 }

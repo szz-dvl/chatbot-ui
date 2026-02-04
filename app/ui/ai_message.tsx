@@ -5,6 +5,7 @@ import Markdown from 'react-markdown';
 import { DateTime } from "luxon";
 import { AudioContextType } from './audio-config';
 import Image from 'next/image'
+import Modal from '@mui/material/Modal';
 
 export type AiMessageContext = {
     link: string;
@@ -76,9 +77,9 @@ function Player({ message, audio }: PlayerProps) {
                     if (playing) {
                         speechSynthesis.cancel()
                     } else {
-                        
+
                         const utterance = new SpeechSynthesisUtterance(message);
-                        utterance.voice = audio.voice;
+                        utterance.voice = audio.voice || null;
                         utterance.volume = audio.volume;
                         utterance.pitch = audio.pitch;
                         utterance.rate = audio.rate;
@@ -100,8 +101,6 @@ function Player({ message, audio }: PlayerProps) {
 export default function AiMessage({ message, context, audio }: AiMessageProps) {
 
     const [panel, setPanel] = useState<boolean>(false);
-    const [pos, setPos] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
-    const [isMobile] = useState<boolean>(window.screen.width <= 640)
 
     return (
         <div className="self-end md:max-w-2/3 mb-[15px]">
@@ -114,32 +113,19 @@ export default function AiMessage({ message, context, audio }: AiMessageProps) {
                 {
                     context.length ?
                         <div className="underline text-gray-500 cursor-pointer">
-                            <span onClick={(ev) => {
-
-                                setPos({
-                                    x: ev.clientX,
-                                    y: ev.clientY
-                                });
-
-                                setPanel(!panel)
-                            }
-                            }>Contexto</span>
+                            <span onClick={() => {
+                                setPanel(true)
+                            }}>Contexto</span>
                         </div>
                         : <span></span>
                 }
                 <Player message={message} audio={audio} />
             </div>
-            {
-                panel &&
-                <div
-                    style={{
-                        top: pos.y,
-                        left: pos.x
-                    }}
-                    onMouseLeave={() => {
-                        setPanel(false)
-                    }}
-                    className="absolute h-[250px] md:w-[800px] md:h-[250px] bg-white grid md:grid-cols-2 grid-cols-1 overflow-scroll p-2">
+            <Modal
+                open={panel}
+                onClose={() => setPanel(false)}
+                className='flex justify-center items-center'>
+                <div className="h-[250px] md:w-[800px] md:h-[420px] bg-white grid md:grid-cols-2 grid-cols-1 overflow-scroll p-2">
                     {
                         context.map(({ text, link, image, published }) => {
                             return <ContextEntry
@@ -151,8 +137,7 @@ export default function AiMessage({ message, context, audio }: AiMessageProps) {
                         })
                     }
                 </div>
-
-            }
+            </Modal>
         </div>
 
     )
