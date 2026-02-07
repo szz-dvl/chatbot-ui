@@ -1,7 +1,6 @@
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import Image from 'next/image'
 import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
 
 export type AudioContextType = {
     voice?: SpeechSynthesisVoice,
@@ -17,9 +16,12 @@ type AudioConfigProps = {
 
 export default function AudioConfig({ setConfig, config }: AudioConfigProps) {
 
-    const [voices] = useState<SpeechSynthesisVoice[]>(speechSynthesis.getVoices())
+    const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([])
     const [panel, setPanel] = useState<boolean>(false)
-    const [isMobile] = useState<boolean>(window.screen.width <= 640)
+
+    useEffect(() => {
+        setVoices(speechSynthesis.getVoices())
+    }, [])
 
     return (
         <div className="w-screen">

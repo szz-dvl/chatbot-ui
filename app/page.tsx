@@ -177,7 +177,7 @@ export default function Home() {
 
           <div className="flex w-full h-full flex-col flex-wrap">
             {
-              messages.reverse().map(message => {
+              messages.map(message => {
                 switch (message.type) {
                   case "ai":
                     return <AiMessage key={uuidv4()} message={message.content} context={message.context} audio={config} />
