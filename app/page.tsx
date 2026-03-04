@@ -47,7 +47,7 @@ export default function Home() {
     if (done && thoughts.length) {
       setThoughts([])
 
-      fetch(`http://localhost:3002/context`, {
+      fetch(`${process.env.BOT_API}/context`, {
         method: "GET",
         headers: {
           "X-ChatBot-Session": uuid
@@ -133,7 +133,7 @@ export default function Home() {
         }
       ]);
 
-      const response = await fetch("http://localhost:3002/chatbot", {
+      const response = await fetch(`${process.env.BOT_API}/chatbot`, {
         method: form.method,
         body: formData,
         headers: {

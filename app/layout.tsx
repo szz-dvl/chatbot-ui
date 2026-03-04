@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MeneameBot",
+  title: "MenéameBot",
   description: "A Chat Bot for meneame.net",
   icons: [{
     url: "bot.svg",
