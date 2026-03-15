@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
   output: "export",
   env: {
     BOT_API: "http://meneame.bot",
-    AUDIO_ENABLE: "true"
+    AUDIO_ENABLED: "false"
   }
 };
 
