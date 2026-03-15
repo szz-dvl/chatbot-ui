@@ -201,7 +201,7 @@ export default function Home() {
           <fieldset disabled={!done} className="min-h-30 flex items-center justify-center flex-wrap m-2 md:max-w-2/3">
             <textarea name="question" rows={2} cols={20} className="w-full bg-white md:min-w-200 border-black border-1" />
             {/* <input type="text" name="question" className="w-full md:min-w-200 border-black border-1 bg-white" /> */}
-            <button type="submit" className="border-black border-1 p-[2px] cursor-pointer bg-white">Enviar</button>
+            <button type="submit" className="border-black border-1 p-[2px] cursor-pointer bg-white mt-5">Enviar</button>
           </fieldset>
         </form>
         <div className="flex justify-between items-end w-full">
