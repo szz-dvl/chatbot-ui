@@ -205,7 +205,7 @@ export default function Home() {
           </fieldset>
         </form>
         <div className="flex justify-between items-end w-full">
-          <AudioConfig config={config} setConfig={setConfig} />
+          { process.env.AUDIO_ENABLED == "true" ? <AudioConfig config={config} setConfig={setConfig} /> : <span/> }
           <Session uuid={uuid} />
         </div>
       </div>

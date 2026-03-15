@@ -4,7 +4,8 @@ const nextConfig: NextConfig = {
   /* config options here */
   output: "export",
   env: {
-    BOT_API: "http://meneame.bot"
+    BOT_API: "http://meneame.bot",
+    AUDIO_ENABLE: "true"
   }
 };
 

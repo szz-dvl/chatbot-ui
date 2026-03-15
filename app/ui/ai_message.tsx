@@ -119,7 +119,9 @@ export default function AiMessage({ message, context, audio }: AiMessageProps) {
                         </div>
                         : <span></span>
                 }
-                <Player message={message} audio={audio} />
+                {
+                    process.env.AUDIO_ENABLED == "true" ? <Player message={message} audio={audio} /> : <span/>
+                }
             </div>
             <Modal
                 open={panel}
