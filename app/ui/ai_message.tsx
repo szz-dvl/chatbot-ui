@@ -103,7 +103,7 @@ export default function AiMessage({ message, context, audio }: AiMessageProps) {
     const [panel, setPanel] = useState<boolean>(false);
 
     return (
-        <div className="self-end md:max-w-2/3 mb-[15px]">
+        <div className="self-start md:max-w-2/3 mb-[15px]">
             <div className="border-1 border-black p-2 rounded-lg bg-cyan-100 size-full">
                 <Markdown>
                     {message}

@@ -42,6 +42,7 @@ export default function Home() {
   const [config, setConfig] = useState<AudioContextType>(audio)
 
   const bottom = useRef<null | HTMLDivElement>(null)
+  const textArea = useRef<null | HTMLTextAreaElement>(null)
 
   useEffect(() => {
     if (done && thoughts.length) {
@@ -123,6 +124,8 @@ export default function Home() {
 
     if (content.trim()) {
 
+      textArea.current!.value = '' 
+
       setDone(false);
 
       setMessages([
@@ -173,7 +176,7 @@ export default function Home() {
         </div>
         <div className="min-h-[500px] max-h-[500px] min-w-full max-w-full
                       md:min-h-[850px] md:max-h-[850px] md:min-w-2/3 md:max-w-2/3
-                      border-red-100 border-1 mb-[35px] overflow-y-auto overflow-x-hidden p-[15px] bg-white pb-[50px]">
+                      border-red-100 border-1 mb-[35px] overflow-y-auto overflow-x-hidden p-[15px] bg-white pb-[50px] rounded-lg">
 
           <div className="flex w-full h-full flex-col flex-wrap">
             {
@@ -199,8 +202,7 @@ export default function Home() {
         </div>
         <form method="post" onSubmit={formSubmit} className="flex items-center justify-center w-full">
           <fieldset disabled={!done} className="min-h-30 flex items-center justify-center flex-wrap m-2 md:max-w-2/3">
-            <textarea name="question" rows={2} cols={20} className="w-full bg-white md:min-w-200 border-black border-1" />
-            {/* <input type="text" name="question" className="w-full md:min-w-200 border-black border-1 bg-white" /> */}
+            <textarea ref={textArea} name="question" rows={2} cols={20} className="w-full bg-white md:min-w-200 border-black border-1" />
             <button type="submit" className="border-black border-1 p-[2px] cursor-pointer bg-white mt-5">Enviar</button>
           </fieldset>
         </form>

@@ -25,7 +25,7 @@ export function Dots() {
 
 export default function Thoughts({ thoughts }: ThoughtsProps) {
     return (
-        <div className="self-end max-w-2/3 border-1 border-black p-2 rounded-lg bg-gray-100 mb-[15px]">
+        <div className="self-start md:max-w-2/3 border-1 border-black p-2 rounded-lg bg-gray-100 mb-[15px]">
             { thoughts.map(thought => <span> {thought} </span>)  } 
             <Dots />
         </div>
